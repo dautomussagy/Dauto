@@ -177,13 +177,19 @@ body::before {
 
     document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      alert('Agendamento enviado com sucesso! Entraremos em contacto.');
       const nome = document.getElementById('nome').value;
       const contacto = document.getElementById('contacto').value;
       const servico = document.getElementById('servico').value;
       const outro = document.getElementById('descricaoOutro').value;
-      const link = `https://wa.me/258869212037?text=Novo%20agendamento%20de%20${nome}%20(${contacto})%20para%20${servico === 'outro' ? outro : servico}.`;
+      const pagamento = document.getElementById('pagamento').value;
+      const numeroPagamento = document.getElementById('numeroPagamento').value;
+      const tipoServico = servico === 'outro' ? outro : servico;
+
+      const mensagem = `Novo agendamento:%0A- Nome: ${nome}%0A- Contacto: ${contacto}%0A- Serviço: ${tipoServico}%0A- Forma de Pagamento: ${pagamento}%0A- Conta/Número: ${numeroPagamento}`;
+      const link = `https://wa.me/258869212037?text=${mensagem}`;
+
       window.open(link, '_blank');
+      alert('Agendamento enviado com sucesso! Entraremos em contacto.');
     });
 
     window.onload = preencherDadosPagamento;
