@@ -1,0 +1,81 @@
+// Site para DR Car Wash Service, EI com painel interno de gestão import { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input"; import { Textarea } from "@/components/ui/textarea"; import { motion } from "framer-motion";
+
+export default function Home() { const [form, setForm] = useState({ nome: "", contacto: "", servico: "", pagamento: "", comprovativo: null }); const [clientesFieis, setClientesFieis] = useState([]); const [verificados, setVerificados] = useState([]); const [admin, setAdmin] = useState(false); const [senha, setSenha] = useState("");
+
+const gerarReciboPDF = (cliente) => { const win = window.open('', '_blank'); const reciboHTML = <html><head><title>Recibo</title></head><body> <h1>Recibo de Serviço - DR Car Wash</h1> <p><strong>Nome:</strong> ${cliente.nome}</p> <p><strong>Contacto:</strong> ${cliente.contacto}</p> <p><strong>Serviço:</strong> ${cliente.servico}</p> <p><strong>Forma de Pagamento:</strong> ${cliente.pagamento}</p> <p><em>Data:</em> ${new Date().toLocaleDateString()}</p> <p>Obrigado pela preferência!</p> </body></html>; win.document.write(reciboHTML); win.document.close(); win.print(); };
+
+const handleAgendamento = (e) => { e.preventDefault(); setClientesFieis([...clientesFieis, { ...form, verificado: false }]); alert("Agendamento enviado! Aguarde a verificação."); };
+
+const confirmarCliente = (index) => { const atualizado = [...clientesFieis]; atualizado[index].verificado = true; setClientesFieis(atualizado); setVerificados([...verificados, atualizado[index]]); alert(Agendamento de ${atualizado[index].nome} confirmado com sucesso!); gerarReciboPDF(atualizado[index]); };
+
+return ( <main className="bg-gradient-to-b from-black via-red-900 to-blue-900 min-h-screen text-white p-4"> <section className="text-center py-10"> <img src="/logo.png" alt="Logo DR Car Wash" className="mx-auto w-40 mb-4" /> <h1 className="text-4xl font-bold">DR Car Wash Service, EI</h1> <p className="text-lg mt-2">Lavagem simples, polimento, aspiração, limpeza de assentos, sofás e muito mais</p> </section>
+
+{!admin && (
+    <div className="max-w-sm mx-auto mb-8">
+      <Input type="password" placeholder="Área administrativa - digite a senha" value={senha} onChange={e => setSenha(e.target.value)} />
+      <Button className="mt-2 w-full" onClick={() => senha === "1234" ? setAdmin(true) : alert("Senha incorreta")}>Entrar</Button>
+    </div>
+  )}
+
+  <motion.section className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+    <Card className="bg-white text-black shadow-xl rounded-2xl p-4">
+      <CardContent>
+        <h2 className="text-2xl font-semibold mb-4">Agendamento Rápido</h2>
+        <form className="space-y-4" onSubmit={handleAgendamento}>
+          <Input placeholder="Nome" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+          <Input placeholder="Contacto" value={form.contacto} onChange={e => setForm({ ...form, contacto: e.target.value })} />
+          <Textarea placeholder="Tipo de serviço" value={form.servico} onChange={e => setForm({ ...form, servico: e.target.value })} />
+          <Textarea placeholder="Forma de pagamento (ex: M-Pesa)" value={form.pagamento} onChange={e => setForm({ ...form, pagamento: e.target.value })} />
+          <Input type="file" onChange={e => setForm({ ...form, comprovativo: e.target.files[0] })} />
+          <Button type="submit">Agendar</Button>
+        </form>
+      </CardContent>
+    </Card>
+
+    <Card className="bg-white text-black shadow-xl rounded-2xl p-4">
+      <CardContent>
+        <h2 className="text-2xl font-semibold mb-4">Formas de Pagamento</h2>
+        <ul className="space-y-2">
+          <li><strong>M-Pesa:</strong> 852986596</li>
+          <li><strong>e-Mola:</strong> 869212037</li>
+          <li><strong>Transferência Bancária:</strong></li>
+          <li>BIM: 319563397</li>
+          <li>BCI: 000800002305829110113</li>
+          <li><strong>Titular:</strong> Dauto Ramchande</li>
+          <li><strong>Também aceitamos:</strong> Pagamento em numerário</li>
+        </ul>
+      </CardContent>
+    </Card>
+  </motion.section>
+
+  <section className="mt-10 text-white">
+    <h2 className="text-2xl font-bold mb-4">Galeria de Serviços</h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <img src="/car1.jpg" alt="Antes da Lavagem" className="rounded-xl shadow" />
+      <img src="/car2.jpg" alt="Depois da Lavagem" className="rounded-xl shadow" />
+      <img src="/car3.jpg" alt="Limpeza de Sofás" className="rounded-xl shadow" />
+      <img src="/car4.jpg" alt="Polimento de Viatura" className="rounded-xl shadow" />
+    </div>
+  </section>
+
+  <section className="mt-10 text-white">
+    <h2 className="text-2xl font-bold mb-4">Clientes Fiéis</h2>
+    <ul className="list-disc list-inside">
+      {clientesFieis.map((cliente, index) => (
+        <li key={index} className="mb-1">
+          {cliente.nome} - {cliente.servico} {cliente.verificado && "(Confirmado)"}
+          {admin && !cliente.verificado && (
+            <Button className="ml-2 text-xs" onClick={() => confirmarCliente(index)}>Confirmar</Button>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <footer className="text-center text-sm text-gray-300 mt-10">
+    &copy; 2025 DR Car Wash Service, EI. Todos os direitos reservados.
+  </footer>
+</main>
+
+); }
+
