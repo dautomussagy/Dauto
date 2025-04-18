@@ -144,15 +144,12 @@ body::before {
 </div>
 
 <label for="pagamento">Forma de Pagamento:</label>
-<select id="pagamento" required onchange="preencherDadosPagamento()">
-  <option value="m-pesa">M-Pesa - 852986596</option>
-  <option value="e-mola">e-Mola - 869212037</option>
-  <option value="bci">Transferência Bancária (BCI) - 000800002305829110113</option>
-  <option value="numerário">Numerário</option>
+<select id="pagamento" required>
+  <option value="M-Pesa - 852986596">M-Pesa - 852986596</option>
+  <option value="e-Mola - 869212037">e-Mola - 869212037</option>
+  <option value="BCI - 000800002305829110113">Transferência Bancária (BCI) - 000800002305829110113</option>
+  <option value="Numerário">Numerário</option>
 </select>
-
-<label for="numeroPagamento">Número/Conta:</label>
-<input type="text" id="numeroPagamento" readonly>
 
 <label for="comprovativo">Anexar Comprovativo:</label>
 <input type="file" id="comprovativo" accept="image/*,application/pdf">
@@ -165,16 +162,6 @@ body::before {
       document.getElementById('campoOutro').classList.toggle('hidden', tipo !== 'outro');
     }
 
-    function preencherDadosPagamento() {
-      const tipo = document.getElementById('pagamento').value;
-      let numero = '';
-      if (tipo === 'm-pesa') numero = '852986596';
-      else if (tipo === 'e-mola') numero = '869212037';
-      else if (tipo === 'bci') numero = 'BCI 000800002305829110113';
-      else numero = '';
-      document.getElementById('numeroPagamento').value = numero;
-    }
-
     document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const nome = document.getElementById('nome').value;
@@ -182,16 +169,13 @@ body::before {
       const servico = document.getElementById('servico').value;
       const outro = document.getElementById('descricaoOutro').value;
       const pagamento = document.getElementById('pagamento').value;
-      const numeroPagamento = document.getElementById('numeroPagamento').value;
       const tipoServico = servico === 'outro' ? outro : servico;
 
-      const mensagem = `Novo agendamento:%0A- Nome: ${nome}%0A- Contacto: ${contacto}%0A- Serviço: ${tipoServico}%0A- Forma de Pagamento: ${pagamento}%0A- Conta/Número: ${numeroPagamento}`;
+      const mensagem = `Novo agendamento:%0A- Nome: ${nome}%0A- Contacto: ${contacto}%0A- Serviço: ${tipoServico}%0A- Forma de Pagamento: ${pagamento}`;
       const link = `https://wa.me/258869212037?text=${mensagem}`;
 
       window.open(link, '_blank');
       alert('Agendamento enviado com sucesso! Entraremos em contacto.');
     });
-
-    window.onload = preencherDadosPagamento;
   </script></body>
 </html>
